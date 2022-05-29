@@ -83,5 +83,6 @@
       shell: |
        kadmin.local -q "addprinc -pw ravi41 ravi4" 
        kadmin.local -q "ktadd ravi4"
+       chmod 777 /etc/krb5.keytab
 
 
