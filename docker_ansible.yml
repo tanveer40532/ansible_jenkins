@@ -1,0 +1,12 @@
+
+---
+- hosts: all
+  tasks:
+    - name: deploy nginx docker container
+      docker_container:
+        image: tanveer40532/tanveer543
+        name: nginx
+        state: started
+        auto_remove: true
+        ports:
+          - "8076:80"
