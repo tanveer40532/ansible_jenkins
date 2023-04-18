@@ -1,0 +1,47 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('ContinuousDownload')
+        {
+            steps
+            {
+                git 'https://github.com/intelliqittrainings/maven.git'
+            }
+        }
+        stage('Continuousbuild')
+        {
+            steps
+            {
+                sh 'mvn package'
+            }
+        }
+        stage('Continuousdeployee')
+        {
+            steps
+            {
+                sshagent(['dep']) {
+                sh "scp -r -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/Project-1/webapp/target/webapp.war root@192.168.100.108:/root/apache-tomcat-9.0.73/webapps/qaapp.war"
+            }
+            }
+        }
+        stage('Continuoustest')
+        {
+            steps
+            {
+                git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                sh 'java -jar /var/lib/jenkins/workspace/Project-1/testing.jar'
+            }
+        }
+        stage('Continuousdelevery')
+        {
+            steps
+            {
+                sshagent(['dep']) {
+                sh "scp -r -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/Project-1/webapp/target/webapp.war root@192.168.100.108:/root/apache-tomcat-9.0.73/webapps/prod.war"
+            }
+            }
+        }    
+    }
+}    
